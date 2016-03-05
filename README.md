@@ -14,7 +14,7 @@ Docker and containers are increasingly becoming popular and offer serveral benef
 
 At a high level Docker architecture looks like this.
 
-[[https://github.com/srirajan/ecs-playground/blob/master/images/docker-architecture.svg]]
+[](https://github.com/srirajan/ecs-playground/blob/master/images/docker-architecture.svg)
 
 *Source: https://docs.docker.com/engine/understanding-docker/*
 
@@ -95,7 +95,7 @@ Note, this assumes some familiarity with Git & Docker and AWS services like VPC,
   
 Architecturally, it looks like this:
 
-[[https://github.com/srirajan/ecs-playground/blob/master/images/ecs-sample-app.png]]
+[](https://github.com/srirajan/ecs-playground/blob/master/images/ecs-sample-app.png)
 
 
 ### Get ECS running
