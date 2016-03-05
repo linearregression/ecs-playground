@@ -12,12 +12,6 @@ In this article we will look at the AWS ECS as service and how it could be used 
 ### Docker
 Docker and containers are increasingly becoming popular and offer serveral benefits from a development and delivery perspective. Similar to the way CloudFormation can provision AWS services, Docker provides a declarative syntax for creating containers. 
 
-At a high level Docker architecture looks like this.
-
-![](https://github.com/srirajan/ecs-playground/blob/master/images/docker-architecture.svg)
-
-*Source: https://docs.docker.com/engine/understanding-docker/*
-
 For more about Docker architecure, refer to [Understand the architecture](https://docs.docker.com/engine/understanding-docker/)
 
 
@@ -95,7 +89,7 @@ Note, this assumes some familiarity with Git & Docker and AWS services like VPC,
   
 Architecturally, it looks like this:
 
-![](https://github.com/srirajan/ecs-playground/blob/master/images/ecs-sample-app.png)
+![](https://github.com/srirajan/ecs-playground/blob/master/ecs-sample-app.png)
 
 
 ### Get ECS running
