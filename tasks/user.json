@@ -1,0 +1,30 @@
+{
+  "containerDefinitions": [
+    {
+      "name": "user",
+      "image": "srirajan/user:1",
+      "cpu": 512,
+      "memory": 1024,
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 9091,
+          "hostPort": 9091
+        }
+      ],
+      "environment": [
+        { "name": "DB_HOST", "value": "ecsdb.cat6z9up2jds.us-east-1.rds.amazonaws.com" },
+        { "name": "DB_USER", "value": "user" },
+        { "name": "DB_PWD", "value": "1QAZ2wsx3edc" },
+        { "name": "DB_NAME", "value": "user" }
+      ],
+      "extraHosts": [
+      {
+        "hostname": "googledns",
+        "ipAddress": "8.8.8.8"
+      }
+    ]
+    }
+  ],
+  "family": "user"
+}

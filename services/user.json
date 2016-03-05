@@ -1,0 +1,19 @@
+{
+    "cluster": "app01",
+    "serviceName": "user",
+    "taskDefinition": "user",
+    "loadBalancers": [
+        {
+            "loadBalancerName": "user",
+            "containerName": "user",
+            "containerPort": 9091
+        }
+    ],
+    "desiredCount": 4,
+    "clientToken": "usususus",
+    "role": "arn:aws:iam::964029947503:role/ecsServiceRole",
+    "deploymentConfiguration": {
+        "maximumPercent": 200,
+        "minimumHealthyPercent": 50
+    }
+}
