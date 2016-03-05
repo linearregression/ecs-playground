@@ -14,7 +14,7 @@ Docker and containers are increasingly becoming popular and offer serveral benef
 
 At a high level Docker architecture looks like this.
 
-[[(https://github.com/srirajan/ecs-playground/blob/master/images/docker-architecture.svg]]
+[[https://github.com/srirajan/ecs-playground/blob/master/images/docker-architecture.svg]]
 
 *Source: https://docs.docker.com/engine/understanding-docker/*
 
