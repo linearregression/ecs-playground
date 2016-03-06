@@ -10,9 +10,7 @@ Last updated|March 5, 2015| Sriram Rajan
 In this article we will look at the AWS ECS as service and how it could be used to deploy Docker containers. We will also provide examples for a step by step deployment on ECS.
 
 ### Docker
-Docker and containers are increasingly becoming popular and offer serveral benefits from a development and delivery perspective. Similar to the way CloudFormation can provision AWS services, Docker provides a declarative syntax for creating containers. 
-
-For more about Docker architecure, refer to [Understand the architecture](https://docs.docker.com/engine/understanding-docker/)
+Docker and containers are increasingly becoming popular and offer several benefits from a development and delivery perspective. Similar to the way CloudFormation can provision AWS services, Docker provides a declarative syntax for creating containers. For more about Docker architecture, refer to [Understand the architecture](https://docs.docker.com/engine/understanding-docker/)
 
 
 ### ECS
@@ -30,7 +28,7 @@ Here are some core ECS concepts.
 
  - Cluster :  A logical grouping of EC2 container instances that run tasks. The cluster is more a skeleton around which build your workload.
  
- - Container Instance : This is actually an n EC2 instance running the ECS agent. The recomended way is to use AWS ECS AMI but any AMI can be used as long as you add the ECS agent to it.
+ - Container Instance : This is actually an n EC2 instance running the ECS agent. The recommended way is to use AWS ECS AMI but any AMI can be used as long as you add the ECS agent to it.
  
  - Task Definition : An application containing one or more containers. This is where you provide the Docker images, how much CPU/Memory to use, ports etc. You can also link containers here similar to Docker command line.
 
@@ -83,14 +81,17 @@ Note, this assumes some familiarity with Git & Docker and AWS services like VPC,
  
  - Deploy them using ECS cli and using the tasks and services
  
- - Perform a changes to the application anb deploy new versions
+ - Perform a changes to the application and deploy new versions
  
  - Review how ELB works with these changes
   
-Architecturally, it looks like this:
+Here's how it looks architecturally 
 
-![](https://github.com/srirajan/ecs-playground/blob/master/ecs-sample-app.png)
+![image](images/ecs-sample-app.png =400x400)
 
+And here's the flow:
+
+![image](images/ecs-flow.png)
 
 ### Get ECS running
 
@@ -104,11 +105,11 @@ Now let's create the services we need to get started.
  
  - In the cluster name field, enter a name for your cluster and create it. We used '*app01*' in this example but if you don't choose anything it uses 'default'
  
- - This creates a framework for ECS. Now we add EC2 instances to it. The best way to do this is via an Autoscaling group. So create an autoscale group with the lauch config and the amzn-ami-2015.09.g-amazon-ecs-optimized AMI
+ - This creates a framework for ECS. Now we add EC2 instances to it. The best way to do this is via an Autoscaling group. So create an autoscale group with the launch config and the amzn-ami-2015.09.g-amazon-ecs-optimized AMI
  
  - For this example, t2.medium was used but you can do micro instances if you want to avoid costs.
  
- - In the IAM section provide the corresonding ECS role created when preparing the account.
+ - In the IAM section provide the corresponding ECS role created when preparing the account.
  
  - If you have changed the cluster name, then you need to add User data to the launch configuration.
  
@@ -122,7 +123,7 @@ echo ECS_CLUSTER=app01 >> /etc/ecs/ecs.config
  
  - Then provide the ECS VPC and subnets for Autoscale.
  
- - Since this is a demo, we can keep group at initial size. But if you want you can play with the metrics and tie to this your cluster usage for acutal autoscaling.
+ - Since this is a demo, we can keep group at initial size. But if you want you can play with the metrics and tie to this your cluster usage for actual autoscaling.
  
  - Review and launch this. Then wait for a few minutes as the EC2 instances are spun up and start appearing under the ECS Instances section of your ECS cluster.
  
@@ -192,7 +193,7 @@ Also make sure ELB and RDS instances are up and running.
 
  - This can be any Docker images but the actual use case, we built a Docker image which runs Ubuntu, Nginx, PHP-fpm. We added some custom code to connect to RDS etc. All the source is available [https://github.com/srirajan/ecs-playground](https://github.com/srirajan/ecs-playground)
  
- - Build the docker images and upload them to your Docker hub. This example uses public images but you can also embedd credentials and use private images.
+ - Build the docker images and upload them to your Docker hub. This example uses public images but you can also embed credentials and use private images.
  
 ```
 git clone https://github.com/srirajan/ecs-playground
@@ -210,7 +211,7 @@ docker push "srirajan/user"
 
 ### Deploying tasks and services
 
- - Once we have the images, lets start deploying. The first step is to create a task definion.
+ - Once we have the images, lets start deploying. The first step is to create a task definition.
 
 ```
 {
@@ -267,7 +268,7 @@ You can read about the parameters in detail here [http://docs.aws.amazon.com/Ama
 export AWS_DEFAULT_REGION=us-east-1
 ```
 
- - Register the task defintion. This does not instantiate the task, so, nothing is running right now.
+ - Register the task definition. This does not instantiate the task, so, nothing is running right now.
 
 ```
 aws ecs register-task-definition --cli-input-json file://location.json
@@ -309,7 +310,7 @@ aws ecs create-service --cli-input-json file://location.json
 aws ecs describe-services --services location --cluster app01
 ```
 
- - If all is working you will see a "runningCount" of 4 and the corresonding load balancer is now serving traffic.
+ - If all is working you will see a "runningCount" of 4 and the corresponding load balancer is now serving traffic.
 
 
  - Repeat the same for the User 
@@ -334,7 +335,7 @@ aws ecs describe-services --services location --cluster app01
       "environment": [
         { "name": "DB_HOST", "value": "ecsdb.cat6z9up2jds.us-east-1.rds.amazonaws.com" },
         { "name": "DB_USER", "value": "user" },
-        { "name": "DB_PWD", "value": "1QAZ2wsx3edc" },
+        { "name": "DB_PWD", "value": "RDS_PWD" },
         { "name": "DB_NAME", "value": "user" }
       ],
       "extraHosts": [
@@ -394,7 +395,7 @@ aws ecs describe-services --services user --cluster app01
  
  - Then you update the json file for the task definition with the new tag. The only thing that changes in the json file is the image link. If you don't use tags and rely on the latest docker image, then no change is needed to the json file.
 
- - Update the task definition to a new verion. In this example, location task definition has changed to version 11
+ - Update the task definition to a new version. In this example, location task definition has changed to version 11
  
 ```
 aws ecs register-task-definition --cli-input-json file://user.json
@@ -422,9 +423,6 @@ Here are some other areas that could be explored to add more functionality to an
  
  - Build autoscale based on container and ECS metrics
 
-
-## Conclusion
-<TBC>
 
 
 ==========
