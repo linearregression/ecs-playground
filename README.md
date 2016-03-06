@@ -87,7 +87,7 @@ Note, this assumes some familiarity with Git & Docker and AWS services like VPC,
   
 Here's how it looks architecturally 
 
-![image](images/ecs-sample-app.png =400x400)
+![image](images/ecs-sample-app.png)
 
 And here's the flow:
 
