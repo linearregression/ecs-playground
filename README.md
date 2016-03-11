@@ -39,13 +39,9 @@ Here are some core ECS concepts.
  - Container : A Docker container that is part of a task.
 
 
-## ECS Use cases
+## ECS Use case
 
- - An easy way to deploy Docker with limited management overhead.
- 
- - Part of the AWS ecosystem and so is easy to tie with other applications already running in AWS.
-
-<NEED MORE>
+The main use cases is the ease of management of the infrastructure used to run Docker containers. If you are part of the AWS ecosystem it easily tries into other applications running on it or services like RDS. In addition to that it well integrated with Cloud Watch, can leverage Autoscale or work with Elastic Beanstalk.
 
  
 ## ECS Considerations
@@ -70,6 +66,9 @@ Here are some core ECS concepts.
  - ECS allows external schedulers and the driver is open source. So you can use something like Mesos with ECS; [https://github.com/awslabs/ecs-mesos-scheduler-driver](https://github.com/awslabs/ecs-mesos-scheduler-driver) 
  
  - Autoscale is a perfect use-case for this type of workloads and so build the EC2 instances using an Autoscale policy.
+
+ - AWS recommends using their EC2 AMIs for the EC2 instances. If you want more control over this or want run CoreOS or similar, then you need to bake ECS agents into those AMIs. The ECS agent is open source and so you can easily do that.
+
  
 ## ECS Step by Step
 
@@ -97,7 +96,7 @@ And here's the flow:
 
 Now let's create the services we need to get started.
 
- - In this example we are building this in us-east-1 region.
+ - In this example we are building this in the us-east-1 region.
  
  - Follow the AWS guide to get the necessary IAM roles etc in place for ECS [Setting Up with Amazon ECS](http://docs.aws.amazon.com/AmazonECS/latest/developerguide/get-set-up-for-amazon-ecs.html)
  
@@ -105,21 +104,20 @@ Now let's create the services we need to get started.
  
  - In the cluster name field, enter a name for your cluster and create it. We used '*app01*' in this example but if you don't choose anything it uses 'default'
  
- - This creates a framework for ECS. Now we add EC2 instances to it. The best way to do this is via an Autoscaling group. So create an autoscale group with the launch config and the amzn-ami-2015.09.g-amazon-ecs-optimized AMI
+ - This only creates a framework for ECS. Now we add EC2 instances to it. The best way to do this is via an Autoscaling group. So create an autoscale group launch configuration and use the 'amzn-ami-2015.09.g-amazon-ecs-optimized' AMI
  
- - For this example, t2.medium was used but you can do micro instances if you want to avoid costs.
- 
+ - For this example, t2.medium was used but you can do micro instances if you want to just play with this. This can be done using free tier as well.
+
  - In the IAM section provide the corresponding ECS role created when preparing the account.
  
- - If you have changed the cluster name, then you need to add User data to the launch configuration.
+ - If you have changed the cluster name, then you need to add User data to the launch configuration. If you build your own ECS AMIs, you can bake this into the AMI.
  
 ```
  #!/bin/bash
 echo ECS_CLUSTER=app01 >> /etc/ecs/ecs.config
 ```
 
- - Once the launch configuration is complete, in the Autoscale section, select 
- 4 instances and give it a group name.
+ - Once the launch configuration is complete, in the Autoscale section, select 4 instances and give it a group name.
  
  - Then provide the ECS VPC and subnets for Autoscale.
  
@@ -130,22 +128,22 @@ echo ECS_CLUSTER=app01 >> /etc/ecs/ecs.config
  
 ### Get ELB running
 
- - For this example create two ELB instances; location and user Creation of the ELB is the same as any ELB creation with the following differences
+ - For this example create two ELB instances; location and user Creation of the ELB is the same as any ELB creation with the following differences.
  
-   - You have decide on the ports you will use for the services. In our example, we choose port 8081 for the location service and 9091 for the user service
+   - You have decide on the ports you will use for the services. In our example, we choose port 8081 for the location service and 9091 for the user service.
    
-   - Configure proper health checks as you would with any instance
+   - Configure proper health checks as you would with any instance.
    
-   - Do not add any EC2 instances to it. This will be done later on in the ECS service side
-   
+   - Do not add any EC2 instances to it. This will be done later on in the ECS service side.
+
 
 ### Get RDS running
 
- - You can skip this step but to make this more real world, we created a RDS instance that the containers will use for databases
+ - You can skip this step but to make this more real world, we created a RDS instance that the containers will use for databases.
  
- - Create an RDS DB of your choice and configure per normal
+ - Create an RDS DB of your choice and configure per normal.
  
- - Note down the credentials and endpoints for later use
+ - Note down the credentials and endpoints for later use.
 
 ### Check the setup
 
@@ -191,9 +189,9 @@ Also make sure ELB and RDS instances are up and running.
 
 ### Docker Images
 
- - This can be any Docker images but the actual use case, we built a Docker image which runs Ubuntu, Nginx, PHP-fpm. We added some custom code to connect to RDS etc. All the source is available [https://github.com/srirajan/ecs-playground](https://github.com/srirajan/ecs-playground)
+ - This can be any Docker images but for this exame, we built a Docker image which runs Ubuntu, Nginx, PHP-fpm. We added some custom code to connect to RDS etc. All the source is available [https://github.com/srirajan/ecs-playground](https://github.com/srirajan/ecs-playground)
  
- - Build the docker images and upload them to your Docker hub. This example uses public images but you can also embed credentials and use private images.
+ - Build the docker images and upload them to your Docker hub. This example uses public images but you can also embed Docker Hub credentials and use private images.
  
 ```
 git clone https://github.com/srirajan/ecs-playground
@@ -246,19 +244,23 @@ docker push "srirajan/user"
 }
 ```
 
-The task represents a single container and includes several parameters:
-
-family - is the name of the task definition.
+Parameters explained :
 
 name - is the container name.
 
+family - Name of the task definition. It is not clear when this would be different from name.
+
 image - is the public image on DockerHub.
 
-cpu - is the number of cpu units to allocate (there are 1024 units per core).
+cpu - is the number of cpu units to allocate (there are 1024 units per CPU core).
 
-memory - is the amount of memory to allocate in MB.
+memory - is the amount of memory to allocate in MB. Note, if you process consumes more than this, it is killed. So this may require some testing to get it right. It is also a good guardrail to contain process. For e.g. if this belongs to a dev role, you can restrict it's usage.
 
-portMappings - This is key as we have configured our ELB to use this.
+portMappings - The one to one mapping for the EC2 host port and the container port. This can be an array and so you have more than one. If you leave the host port as 0, ECS will automatically select a host port. In our example this is the same as the port configured on the ELB side
+
+environment - It is the same as passing Docker environment variables using -e
+
+extraHosts - Just an example where ECS allows you to inject arbitary host file entries in /etc/hosts
 
 You can read about the parameters in detail here [http://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html](http://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html)
 
@@ -304,7 +306,7 @@ aws ecs register-task-definition --cli-input-json file://location.json
 aws ecs create-service --cli-input-json file://location.json
 ```
 
-- You can check the status via command line
+- You can check the status via command line.
 
 ```
 aws ecs describe-services --services location --cluster app01
@@ -313,9 +315,9 @@ aws ecs describe-services --services location --cluster app01
  - If all is working you will see a "runningCount" of 4 and the corresponding load balancer is now serving traffic.
 
 
- - Repeat the same for the User 
+ - Repeat the same for the User.
 
- -  User task
+ - User task.
 
 ```
 {
@@ -355,7 +357,7 @@ aws ecs register-task-definition --cli-input-json file://user.json
 ```
 
 
- - User Service
+ - User Service.
  
 ```
 {
@@ -392,7 +394,6 @@ aws ecs describe-services --services user --cluster app01
 
  - Now if we decide to change the application, you will make the changes to the docker image and push it back to Docker hub, under a new tag (version)
  
- 
  - Then you update the json file for the task definition with the new tag. The only thing that changes in the json file is the image link. If you don't use tags and rely on the latest docker image, then no change is needed to the json file.
 
  - Update the task definition to a new version. In this example, location task definition has changed to version 11
@@ -409,6 +410,7 @@ aws ecs update-service --cluster default --service location --desired-count 4 --
 
  - That's ends this tutorial. Play around with the AWS console, especially, the metrics tab to view the usage of your cluster.
 
+
 ### What next
 
 Here are some other areas that could be explored to add more functionality to an ECS solution.
@@ -422,7 +424,6 @@ Here are some other areas that could be explored to add more functionality to an
  - Test other scheduler drivers
  
  - Build autoscale based on container and ECS metrics
-
 
 
 ==========
