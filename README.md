@@ -415,7 +415,7 @@ aws ecs update-service --cluster default --service location --desired-count 4 --
 
 Here are some other areas that could be explored to add more functionality to an ECS solution.
 
- - Extend this example to use Consul for service description
+ - Extend this example to use Consul for service discovery
  
  - Extend Consul to manage the ELB for us. This could be used to overcome the limitation of port numbers in ECS
  
