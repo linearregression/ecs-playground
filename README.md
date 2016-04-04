@@ -1,8 +1,8 @@
 # Docker and ECS
 
-Date | Comments | Author
------ | ------  | ------
-Last updated|March 5, 2015| Sriram Rajan
+## Presentation Link
+
+[https://www.slideshare.net/secret/B2xafuyYd969oC]()
 
 
 ## Overview
@@ -12,6 +12,7 @@ In this article we will look at the AWS ECS as service and how it could be used 
 ### Docker
 Docker and containers are increasingly becoming popular and offer several benefits from a development and delivery perspective. Similar to the way CloudFormation can provision AWS services, Docker provides a declarative syntax for creating containers. For more about Docker architecture, refer to [Understand the architecture](https://docs.docker.com/engine/understanding-docker/)
 
+If you are interested in playing with Docker, you can review an older post that covers Docker basics [https://github.com/srirajan/onmetal-docker/blob/master/README.md]()
 
 ### ECS
 
