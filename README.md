@@ -2,7 +2,8 @@
 
 ## Presentation Link
 
-[https://www.slideshare.net/secret/B2xafuyYd969oC]()
+https://www.slideshare.net/secret/B2xafuyYd969oC
+
 
 
 ## Overview
