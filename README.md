@@ -8,7 +8,7 @@ https://www.slideshare.net/secret/B2xafuyYd969oC
 
 ## Overview
 
-In this article we will look at the AWS ECS as service and how it could be used to deploy Docker containers. We will also provide examples for a step by step deployment on ECS.
+In this article we will look at the AWS ECS and how it could be used to deploy Docker containers. We will also provide examples for a step by step deployment on ECS.
 
 ### Docker
 Docker and containers are increasingly becoming popular and offer several benefits from a development and delivery perspective. Similar to the way CloudFormation can provision AWS services, Docker provides a declarative syntax for creating containers. For more about Docker architecture, refer to [Understand the architecture](https://docs.docker.com/engine/understanding-docker/)
