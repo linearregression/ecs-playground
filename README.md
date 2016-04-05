@@ -156,7 +156,7 @@ At this point your setup should look like this.
 aws ecs list-clusters
 {
     "clusterArns": [
-        "arn:aws:ecs:us-east-1:964129947503:cluster/app01"
+        "arn:aws:ecs:us-east-1:952028943513:cluster/app01"
     ]
 }
 
@@ -170,7 +170,7 @@ aws ecs describe-clusters --cluster app01
             "pendingTasksCount": 0, 
             "runningTasksCount": 0, 
             "activeServicesCount": 0, 
-            "clusterArn": "arn:aws:ecs:us-east-1:964028947503:cluster/app01"
+            "clusterArn": "arn:aws:ecs:us-east-1:952028943513:cluster/app01"
         }
     ], 
     "failures": []
@@ -179,10 +179,10 @@ aws ecs describe-clusters --cluster app01
 aws ecs list-container-instances --cluster app01
 {
     "containerInstanceArns": [
-        "arn:aws:ecs:us-east-1:962029947503:container-instance/0e9c2658-d9ca-432d-a1e7-5f74682c96f0", 
-        "arn:aws:ecs:us-east-1:964029647503:container-instance/45e45208-b1ce-4ca4-96e9-62492f1540c4", 
-        "arn:aws:ecs:us-east-1:964429947503:container-instance/c220903d-3165-434d-afe0-36b43d909ec1", 
-        "arn:aws:ecs:us-east-1:963029947503:container-instance/ea49b768-c04e-439c-9264-2ca670589177"
+        "arn:aws:ecs:us-east-1:952028943513:container-instance/0e9c2658-d9ca-432d-a1e7-5f74682c96f0", 
+        "arn:aws:ecs:us-east-1:952028943513:container-instance/45e45208-b1ce-4ca4-96e9-62492f1540c4", 
+        "arn:aws:ecs:us-east-1:952028943513:container-instance/c220903d-3165-434d-afe0-36b43d909ec1", 
+        "arn:aws:ecs:us-east-1:952028943513:container-instance/ea49b768-c04e-439c-9264-2ca670589177"
     ]
 }
 ```
@@ -297,7 +297,7 @@ aws ecs register-task-definition --cli-input-json file://location.json
     ],
     "desiredCount": 4,
     "clientToken": "lololololo",
-    "role": "arn:aws:iam::964029947503:role/ecsServiceRole",
+    "role": "arn:aws:iam::952028943513:role/ecsServiceRole",
     "deploymentConfiguration": {
         "maximumPercent": 200,
         "minimumHealthyPercent": 50
@@ -376,7 +376,7 @@ aws ecs register-task-definition --cli-input-json file://user.json
     ],
     "desiredCount": 4,
     "clientToken": "usususus",
-    "role": "arn:aws:iam::964029947503:role/ecsServiceRole",
+    "role": "arn:aws:iam::952028943513:role/ecsServiceRole",
     "deploymentConfiguration": {
         "maximumPercent": 200,
         "minimumHealthyPercent": 50
